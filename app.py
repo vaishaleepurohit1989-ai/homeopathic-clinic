@@ -5,8 +5,8 @@ app = Flask(__name__)
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = 'yourclinicemail@gmail.com'
-app.config['MAIL_PASSWORD'] = 'your-app-password'  # use Gmail App Password
+app.config['MAIL_USERNAME'] = 'vaishaleepurohit1989@gmail.com'
+app.config['MAIL_PASSWORD'] = 'utgm ghyn dvzw cwwb'  # use Gmail App Password
 mail = Mail(app)
 
 @app.route('/')
@@ -17,8 +17,8 @@ def home():
 def submit():
     name = request.form['name']
     msg = Message("New Consultation",
-                  sender="yourclinicemail@gmail.com",
-                  recipients=["momclinic@gmail.com"])
+                  sender="vaishaleepurohit1989@gmail.com",
+                  recipients=["vaishaleepurohit1989@gmail.com"])
     msg.body = f"Patient name: {name}"
     mail.send(msg)
     return "Thank you! Your details were sent."
