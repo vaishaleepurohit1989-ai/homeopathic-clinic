@@ -22,3 +22,6 @@ def submit():
     msg.body = f"Patient name: {name}"
     mail.send(msg)
     return "Thank you! Your details were sent."
+if __name__ == '__main__':
+    app.run(debug=True)
+
