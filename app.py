@@ -30,7 +30,9 @@ def submit():
 
     response = requests.post(url, headers=headers, json=data)
 
-    # Check if Resend accepted the email
+    # Log full response to Render logs
+    print("Resend response:", response.status_code, response.text)
+
     if response.status_code == 200:
         return render_template('thankyou.html')
     else:
