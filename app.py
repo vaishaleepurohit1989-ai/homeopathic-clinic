@@ -17,6 +17,8 @@ def home():
 @app.route('/submit', methods=['POST'])
 def submit():
     name = request.form['name']
+    mobile = request.form['mobile']
+    email = request.form['email']
 
     url = "https://api.resend.com/emails"
     headers = {
@@ -27,18 +29,12 @@ def submit():
         "from": "Clinic <onboarding@resend.dev>",
         "to": ["vaishaleepurohit1989@gmail.com"],
         "subject": "New Consultation",
-        "text": f"Patient name: {name}"
+        "text": f"Patient name: {name}, Mobile number: {mobile}, Email: {email}"
     }
 
     response = requests.post(url, headers=headers, json=data)
-
-    # Log the full response to Render logs
-    logging.info("Resend response: %s %s", response.status_code, response.text)
 
     if response.status_code == 200:
         return render_template('thankyou.html')
     else:
         return f"Error sending email: {response.text}"
-
-if __name__ == '__main__':
-    app.run(debug=True)
