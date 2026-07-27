@@ -1,15 +1,9 @@
-from flask import Flask, render_template, request
-from flask_mail import Mail, Message
+import requests
+from flask import Flask, request, render_template
 
 app = Flask(__name__)
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 587
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = 'vaishaleepurohit1989@gmail.com'
-app.config['MAIL_PASSWORD'] = 'mdpukuwiqdhwkhml'  # use Gmail App Password
-app.config['MAIL_DEFAULT_SENDER'] = 'vaishaleepurohit1989@gmail.com'
 
-mail = Mail(app)
+RESEND_API_KEY = "re_VUcdyL94_Eo86tWR9rvVyGiFHkWpeXLEQ"   # paste your Resend API key
 
 @app.route('/')
 def home():
@@ -18,16 +12,26 @@ def home():
 @app.route('/submit', methods=['POST'])
 def submit():
     name = request.form['name']
-    msg = Message("New Consultation",
-                  sender="vaishaleepurohit1989@gmail.com",
-                  recipients=["vaishaleepurohit1989@gmail.com"])
-    msg.body = f"Patient name: {name}"
-    mail.send(msg)
-    return "Thank you! Your details were sent."
-if __name__ == '__main__':
-    app.run(debug=True)
 
+    # Send email via Resend API
+    url = "https://api.resend.com/emails"
+    headers = {
+        "Authorization": f"Bearer {RESEND_API_KEY}",
+        "Content-Type": "application/json"
+    }
+    data = {
+        "from": "Clinic <onboarding@resend.dev>",   # sender identity
+        "to": ["vaishaleepurohit1989@gmail.com"],   # recipient inbox
+        "subject": "New Consultation",
+        "text": f"Patient name: {name}"
+    }
 
+    response = requests.post(url, headers=headers, json=data)
 
+    # Optional: check response status
+    if response.status_code == 200:
+        return render_template('thankyou.html')
+    else:
+        return f"Error sending email: {response.text}"
 
 
