@@ -1,9 +1,11 @@
+import os
 import requests
 from flask import Flask, request, render_template
 
 app = Flask(__name__)
 
-RESEND_API_KEY = "re_VUcdyL94_Eo86tWR9rvVyGiFHkWpeXLEQ"   # paste your Resend API key
+# Load API key securely from environment variable
+RESEND_API_KEY = os.environ.get("RESEND_API_KEY")
 
 @app.route('/')
 def home():
@@ -20,7 +22,7 @@ def submit():
         "Content-Type": "application/json"
     }
     data = {
-        "from": "Clinic <onboarding@resend.dev>",   # sender identity
+        "from": "Clinic <onboarding@resend.dev>",   # temporary sender identity
         "to": ["vaishaleepurohit1989@gmail.com"],   # recipient inbox
         "subject": "New Consultation",
         "text": f"Patient name: {name}"
@@ -28,10 +30,11 @@ def submit():
 
     response = requests.post(url, headers=headers, json=data)
 
-    # Optional: check response status
+    # Check if Resend accepted the email
     if response.status_code == 200:
         return render_template('thankyou.html')
     else:
         return f"Error sending email: {response.text}"
 
-
+if __name__ == '__main__':
+    app.run(debug=True)
